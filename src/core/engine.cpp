@@ -1,25 +1,21 @@
 #include "engine.hpp"
 #include <GL/freeglut_std.h>
 #include <GL/gl.h>
+#include <cstdio>
 
-void reshapeHelper(int *w, int *h, int isInit) {
-   static float *width;
-   static float *height;
-   if (isInit) {
-      width = (float *)w;
-      height = (float *)h;
-      return;
-   }
-   *width = *w;
-   *height = *h;
+void projectionHolder(Engine *e, int w, int h) {
+   static Engine *a = e;
+   a->windowHeight = h;
+   a->windowWidth = w;
+   a->setProjection(a->projection);
 }
 void changeSize(int w, int h) {
    glViewport(0, 0, w, h);
-   reshapeHelper(&w, &h, 0);
-   glMatrixMode(GL_PROJECTION);
+   projectionHolder(nullptr, w, h);
+   /*glMatrixMode(GL_PROJECTION);
    glLoadIdentity();
    gluPerspective(45.0f, (GLfloat)w / (GLfloat)h, 0.1f, 100.0f);
-   glMatrixMode(GL_MODELVIEW);
+   glMatrixMode(GL_MODELVIEW);*/
 }
 
 void relDraw(Engine *e) {
@@ -29,23 +25,30 @@ void relDraw(Engine *e) {
    int time = glutGet(GLUT_ELAPSED_TIME);
    if (time - lastTime < (1000 / a->targetTFP))
       return;
+
+   a->deltaTime = (time - lastTime);
    lastTime = time;
 
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-   a->deltaTime = (time - lastTime) / 1000.0f;
    glLoadIdentity();
    a->draw();
    glutSwapBuffers();
 }
-
+void relInput(Engine *e, unsigned char c, int x, int y, int type) {
+   static Engine *a = e;
+   a->input(c, x, y, type);
+}
 void display() { relDraw(nullptr); }
+void input_(unsigned char c, int x, int y) {
+   relInput(nullptr, (int)c, x, y, 0);
+}
+void motion(int x, int y) { relInput(nullptr, 0, x, y, 1); }
 
 void Engine::initWindow(const unsigned width, const unsigned height,
                         const char *name) {
 
    this->windowWidth = width;
    this->windowHeight = height;
-   reshapeHelper((int *)&windowWidth, (int *)&windowHeight, 1);
 
    int argv = 1;
    char argc[] = "app";
@@ -56,12 +59,19 @@ void Engine::initWindow(const unsigned width, const unsigned height,
    glutInitWindowSize(width, height);
    glutCreateWindow(name);
 
+   relInput(this, 0, 0, 0, -1);
    relDraw(this);
+   projectionHolder(this,width,height);
+
    glutReshapeFunc(changeSize);
    glutDisplayFunc(display);
    glutIdleFunc(display);
 
+   glutKeyboardFunc(input_);
+   glutPassiveMotionFunc(motion);
+
    glMatrixMode(GL_MODELVIEW);
+   this->preRender();
    glutMainLoop();
 }
 
@@ -86,9 +96,11 @@ void Engine::clearToColor(const float r, const float g, const float b) {
    glClearColor(r, g, b, 1.0f);
 }
 void Engine::setProjection(const PROJECTION projection) {
+   this->projection = projection;
    glMatrixMode(GL_PROJECTION);
    glLoadIdentity();
    float aspect = (float)(windowWidth) / (float)(windowHeight);
+   printf("%f,%f\n", windowWidth, windowHeight);
    switch (projection) {
    case PERSPECTIVE:
       gluPerspective(45.0, windowWidth / windowHeight, 1.0, 100.0);
@@ -105,6 +117,7 @@ void Engine::draw() {
    glTranslated(0, 0, -5);
    glutSolidTeapot(1);
 }
+void Engine::input(int x, int y, int c, int type) {}
 void Engine::toggleFullScrean() {
    static int isFull = 0;
    if (isFull) {
@@ -116,3 +129,4 @@ void Engine::toggleFullScrean() {
       isFull = 1;
    }
 }
+void Engine::preRender() { puts("Start"); }

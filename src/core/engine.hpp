@@ -22,6 +22,11 @@ class Engine {
    unsigned targetTFP = 30;
 
    /**
+    *
+    *
+    */
+   typedef enum : int { KEYBOARD = 0, MOUSE_MOVEMENT = 1 } INPUT_TYPE;
+   /**
     * Enum used for limiting user input
     * in setProjection method
     */
@@ -76,12 +81,34 @@ class Engine {
     */
    virtual void draw();
 
- protected:
+   /**
+    * Virtual method responsible for input handling
+    *
+    * @param x: mouse position (x axis)
+    *	@param y: mouse position (y axis)
+    *	@param c: input char casted to int
+    *	@param type: type of input to handle
+    *
+    */
+   virtual void input(int x, int y, int c, int type);
+
+   /**
+    * Virtual method once invoked before first render
+    */
+   virtual void preRender();
+
+   /**
+    * current projection;
+    */
+   PROJECTION projection = PERSPECTIVE;
+
    /**
     *	Initial window size casted to double
     */
    double windowWidth, windowHeight;
 
+
+ protected:
  private:
 };
 

@@ -6,7 +6,7 @@ class engine : public Engine {
       glTranslated(0, 0, -5);
       glutWireCube(1);
       c.draw();
-      c.rotate(0.1 * deltaTime, 0, 1, 0);
+      c.rotate(5 * deltaTime, 0, 1, 0);
       // c.rotate(0.5 * deltaTime, 1, 0, 1);
       // c.translate(-0.001*deltaTime, 0, 0);
       //

@@ -1,7 +1,17 @@
+COMPILER = g++
+DEBUGGER = gdb
+
+OUTPUT_FILE = test.out
+COMPILATION_DIR = ./
+
+FILES := ./src/*/*.cpp ./src/*/*.hpp ./main.cpp
+DEPENDENCIES := -lGL -lGLU -lglut 
+
 build:
-	g++ ./src/*/*.cpp ./src/*/*.hpp main.cpp -lGL -lGLU -lglut  -o test.out 
+	$(COMPILER) $(FILES) $(DEPENDENCIES) -o $(OUTPUT_FILE)
 run:
-	mangohud ./test.out
+	mangohud $(COMPILATION_DIR)$(OUTPUT_FILE)
 debug:
-	g++ ./src/*/*.cpp ./src/*/*.hpp main.cpp -lGL -lGLU -lglut  -o test.out -p 
-	gdb ./test.out
+	$(COMPILER) $(FILES) $(DEPENDENCIES) -o $(OUTPUT_FILE) -p
+	$(DEBUGGER) $(COMPILATION_DIR)$(OUTPUT_FILE)
+

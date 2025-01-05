@@ -36,7 +36,7 @@ void relDraw(Engine *e) {
 }
 void relInput(Engine *e, unsigned char c, int x, int y, int type) {
    static Engine *a = e;
-   a->input(c, x, y, type);
+   a->input(x, y, c, type);
 }
 void display() { relDraw(nullptr); }
 void input_(unsigned char c, int x, int y) {
@@ -61,7 +61,7 @@ void Engine::initWindow(const unsigned width, const unsigned height,
 
    relInput(this, 0, 0, 0, -1);
    relDraw(this);
-   projectionHolder(this,width,height);
+   projectionHolder(this, width, height);
 
    glutReshapeFunc(changeSize);
    glutDisplayFunc(display);
@@ -69,6 +69,14 @@ void Engine::initWindow(const unsigned width, const unsigned height,
 
    glutKeyboardFunc(input_);
    glutPassiveMotionFunc(motion);
+
+   mainCamera = new Observer();
+   mainLight = new Light(GL_LIGHT0);
+
+   glEnable(GL_LIGHTING);
+   glEnable(GL_LIGHT0);
+   glEnable(GL_COLOR_MATERIAL);
+   glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 
    glMatrixMode(GL_MODELVIEW);
    this->preRender();

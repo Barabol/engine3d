@@ -1,5 +1,6 @@
 #ifndef __3D_SHAPE_
 #define __3D_SHAPE_
+#include "../core/material.hpp"
 #include <glm/ext/matrix_float4x4.hpp>
 class Cube {
  public:
@@ -31,7 +32,7 @@ class Cube {
    double size;
    unsigned char colors[8][3];
    Cube(float poz[3]);
-	Cube();
+   Cube();
    void draw();
    void setColors(unsigned char R, unsigned char G, unsigned char B);
 
@@ -39,6 +40,8 @@ class Cube {
    void rotate(float angle, float rx, float ry, float rz);
    void scale(float x);
    void resetTransform();
+
+   Material material = Material();
 
  protected:
    glm::mat4 transformMatrix;

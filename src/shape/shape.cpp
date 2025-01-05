@@ -17,6 +17,10 @@ Cube::Cube() {
 
    setColors(rand() % 256, rand() % 256, rand() % 256);
    transformMatrix = glm::mat4(1.0f);
+   material.setAmbient(0.2f, 0.2f, 0.2f, 1.0f);
+   material.setDiffuse(0.8f, 0.8f, 0.8f, 1.0f);
+   material.setSpecular(1.0f, 1.0f, 1.0f, 1.0f);
+   material.setShininess(32.0f);
 }
 
 void Cube::setColors(unsigned char R, unsigned char G, unsigned char B) {
@@ -27,6 +31,7 @@ void Cube::setColors(unsigned char R, unsigned char G, unsigned char B) {
    }
 }
 void Cube::draw() {
+   material.apply();
    glPushMatrix();
    glMultMatrixf(glm::value_ptr(transformMatrix));
 

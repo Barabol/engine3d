@@ -1,6 +1,8 @@
 #ifndef __3D_ENGINE__
 #define __3D_ENGINE__
 
+#include "../observer/observer.hpp"
+#include "light.hpp"
 #include <GL/freeglut_std.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
@@ -21,6 +23,7 @@ class Engine {
    float deltaTime;
    unsigned targetTFP = 30;
 
+   Observer *mainCamera;
    /**
     *
     *
@@ -107,6 +110,7 @@ class Engine {
     */
    double windowWidth, windowHeight;
 
+   Light *mainLight;
 
  protected:
  private:

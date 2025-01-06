@@ -40,27 +40,26 @@ class engine : public Engine {
    void input(int x, int y, int c, int type) override {
       static int lastMx, lastMy;
       float offset;
+      float dirs[2];
+      float dirz[2];
       switch (type) {
       case KEYBOARD:
          // dodać transformacje ruchu na podstawie obrotu kamery
          //
-         offset = mainCamera->yaw / 360;
-         printf("%f\n", mainCamera->yaw);
-         printf("> %f|%f\n", offset, 1 - offset);
+         offset = mainCamera->yaw / 180;
 
          switch (c) {
          case 'w':
-            mainCamera->updateLoc((offset) * (-.002 * deltaTime), 0,
-                                  (1 - offset) * (-.002 * deltaTime));
+            dirs[0] = -0.002;
             break;
          case 'a':
-            mainCamera->updateLoc(-.002 * deltaTime, 0, 0);
+            dirs[1] = -0.002;
             break;
          case 's':
-            mainCamera->updateLoc(0, 0, .002 * deltaTime);
+            dirs[0] = 0.002;
             break;
          case 'd':
-            mainCamera->updateLoc(.002 * deltaTime, 0, 0);
+            dirs[1] = 0.002;
             break;
          case 'x':
             mainCamera->updateCirc(10, 0);
@@ -69,7 +68,17 @@ class engine : public Engine {
             mainCamera->updateCirc(-10, 0);
             break;
          }
+         dirz[0] = dirs[0];
+         dirz[1] = dirs[1];
 
+         dirz[0] *= offset - 1;
+         dirz[1] *= 1 - offset - 1;
+         dirz[0] += dirs[1] * (1 - offset - 1);
+         dirz[1] += dirs[0] * (offset - 1);
+         printf("> %f*\n|%f\n|%f\n\n|%f\n|%f\n\n", mainCamera->yaw, offset - 1,
+                1 - offset - 1, dirz[1], dirz[0]);
+
+         mainCamera->updateLoc(dirs[1] * deltaTime, 0, dirs[0] * deltaTime);
          break;
       case MOUSE_MOVEMENT:
          if (x == lastMx && y == lastMy)

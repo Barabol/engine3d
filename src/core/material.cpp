@@ -44,8 +44,8 @@ void Material::setSpecular(float r, float g, float b, float a) {
 void Material::setShininess(float shininess) { this->shininess = shininess; }
 
 void Material::apply() {
-   glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient);
-   glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse);
-   glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specular);
-   glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, shininess);
+   glMaterialfv(GL_FRONT, GL_AMBIENT, ambient);
+   glMaterialfv(GL_FRONT, GL_DIFFUSE, diffuse);
+   glMaterialfv(GL_FRONT, GL_SPECULAR, specular);
+   glMaterialf(GL_FRONT, GL_SHININESS, shininess);
 }

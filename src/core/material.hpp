@@ -1,5 +1,5 @@
-#ifndef MATERIAL_HPP
-#define MATERIAL_HPP
+#ifndef __MATERIAL__
+#define __MATERIAL__
 
 #include <GL/gl.h>
 

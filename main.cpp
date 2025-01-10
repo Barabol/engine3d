@@ -8,14 +8,14 @@ class engine : public Engine {
    void draw() override {
       mainCamera->transpose();
       glutSolidCube(1);
-      c.draw();
-      glTranslated(0, 1, 0.2);
-      c.draw();
+      c.draw("./texture.png");
+      // c.draw();
       // c.rotate(.1 * deltaTime, 0, 1, 0);
-      //  c.rotate(0.5 * deltaTime, 1, 0, 1);
-      //  c.translate(-0.001*deltaTime, 0, 0);
+      //   c.rotate(0.5 * deltaTime, 1, 0, 1);
+      //   c.translate(-0.001*deltaTime, 0, 0);
       //
-      //  mainLight->transpose(0.2 * deltaTime, .2 * deltaTime, .2 * deltaTime);
+      //   mainLight->transpose(0.2 * deltaTime, .2 * deltaTime, .2 *
+      //   deltaTime);
       //
 
       // mainLight->apply();
@@ -25,16 +25,17 @@ class engine : public Engine {
       // glutSetCursor(GLUT_CURSOR_NONE);
       //  setProjection(ORTOGRAPHIC)//;
       c.translate(0, -1, -5);
-      c.material.setAmbient(1, 1, 1, .1);
-      c.material.setShininess(5);
-      c.material.setDiffuse(0, 0, 0, 0);
-      c.material.setSpecular(1, 0, 0, 1);
+      // c.material.setAmbient(1, 1, 1, .1);
+      // c.material.setShininess(5);
+      // c.material.setDiffuse(0, 0, 0, 0);
+      // c.material.setSpecular(1, 0, 0, 1);
 
-      mainLight->setPosition(0, 0, 0);
-      mainLight->setAmbient(.5, .5, .5, 1);
-      mainLight->setSpecular(.1, .1, .1, .0);
-      mainLight->setDiffuse(.2, .2, .2, 1);
+      // mainLight->setPosition(0, 0, 0);
+      // mainLight->setAmbient(1, 1, 1, 1);
+      // mainLight->setSpecular(1, 1, 1, 1);
+      // mainLight->setDiffuse(1, 1, 1, 1);
       glShadeModel(GL_SMOOTH);
+      glEnable(GL_DEPTH_TEST);
       // toggleFullScrean();
    }
    void input(int x, int y, int c, int type) override {
@@ -67,6 +68,10 @@ class engine : public Engine {
          case 'z':
             mainCamera->updateCirc(-10, 0);
             break;
+         case 'v':
+
+            this->c.rotate(.1 * deltaTime, 0, 1, 0);
+            break;
          }
          dirz[0] = dirs[0];
          dirz[1] = dirs[1];
@@ -87,10 +92,11 @@ class engine : public Engine {
          printf("> %f\n", offset);
          mainCamera->updateCirc(.002 * deltaTime * (x - lastMx),
                                 .002 * deltaTime * (y - lastMy));
+
+         //glutWarpPointer(lastMx, lastMy);
          lastMy = y;
          lastMx = x;
 
-         // glutWarpPointer(windowWidth / 2, windowHeight / 2);
          break;
       }
    }

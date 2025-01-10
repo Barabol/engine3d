@@ -1,5 +1,5 @@
-#ifndef LIGHT_HPP
-#define LIGHT_HPP
+#ifndef __LIGHT__
+#define __LIGHT__
 
 #include <GL/gl.h>
 

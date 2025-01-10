@@ -1,5 +1,5 @@
-#ifndef OBSERVER_HPP
-#define OBSERVER_HPP
+#ifndef __OBSERVER__
+#define __OBSERVER__
 
 #include <GL/freeglut.h>
 #include <glm/glm.hpp>

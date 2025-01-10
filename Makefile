@@ -4,8 +4,8 @@ DEBUGGER = gdb
 OUTPUT_FILE = test.out
 COMPILATION_DIR = ./
 
-FILES := ./src/*/*.cpp ./src/*/*.hpp ./main.cpp
-DEPENDENCIES := -lGL -lGLU -lglut 
+FILES := ./src/*/*.cpp ./src/*/*.hpp ./main.cpp ./src/shape/stb_image.h
+DEPENDENCIES := -lGL -lGLU -lglut
 
 build:
 	$(COMPILER) $(FILES) $(DEPENDENCIES) -o $(OUTPUT_FILE)

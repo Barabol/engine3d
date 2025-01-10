@@ -1,39 +1,35 @@
-#ifndef __3D_SHAPE_
-#define __3D_SHAPE_
+#ifndef __3D_SHAPE__
+#define __3D_SHAPE__
 #include "../core/material.hpp"
 #include <glm/ext/matrix_float4x4.hpp>
 class Cube {
  public:
+   float vertices[48] = {-0.5f, 0.0f,  0.5f,  0.5f, 0.0f,  0.5f,  0.5f,  1.0f,
+                         0.5f,  -0.5f, 1.0f,  0.5f, -0.5f, 1.0f,  -0.5f, 0.5f,
+                         1.0f,  -0.5f, 0.5f,  0.0f, -0.5f, -0.5f, 0.0f,  -0.5f,
+                         0.5f,  0.0f,  0.5f,  0.5f, 0.0f,  -0.5f, 0.5f,  1.0f,
+                         -0.5f, 0.5f,  1.0f,  0.5f, -0.5f, 0.0f,  -0.5f, -0.5f,
+                         0.0f,  0.5f,  -0.5f, 1.0f, 0.5f,  -0.5f, 1.0f,  -0.5f};
+
+   float texcoords[32] = {0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0, 0.0, 0.0, 1.0,
+                          0.0, 1.0, 1.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 1.0,
+                          0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0};
+
+   unsigned char indices[24] = {0, 1, 2, 3, 4, 5, 6,  7,  3,  2,  5,  4,
+                                7, 6, 1, 0, 8, 9, 10, 11, 12, 13, 14, 15};
    float normals[6][3] = {{0.0f, 0.0f, -1.0f}, //
                           {0.0f, 0.0f, 1.0f},  //
                           {-1.0f, 0.0f, 0.0f}, //
                           {1.0f, 0.0f, 0.0f},  //
                           {0.0f, -1.0f, 0.0f}, //
                           {0.0f, 1.0f, 0.0f}};
-
-   float vertices[8][3] = {{0.0f, 0.0f, 0.0f}, //
-                           {1.0f, 0.0f, 0.0f}, //
-                           {1.0f, 1.0f, 0.0f}, //
-                           {0.0f, 1.0f, 0.0f}, //
-                           {0.0f, 0.0f, 1.0f}, //
-                           {1.0f, 0.0f, 1.0f}, //
-                           {1.0f, 1.0f, 1.0f}, //
-                           {0.0f, 1.0f, 1.0f}};
-   unsigned char indices[12][3] = {
-       {0, 1, 3}, {1, 2, 3}, //
-       {0, 4, 7}, {7, 3, 0}, //
-       {4, 5, 6}, {6, 7, 4}, //
-       {2, 1, 5}, {2, 6, 5}, //
-       {3, 7, 6}, {6, 2, 3}, //
-       {0, 1, 5}, {0, 4, 5}, //
-
-   };
    float poz[3];
    double size;
    unsigned char colors[8][3];
    Cube(float poz[3]);
    Cube();
    void draw();
+   void draw(const char *texturename);
    void setColors(unsigned char R, unsigned char G, unsigned char B);
 
    void translate(float tx, float ty, float tz);

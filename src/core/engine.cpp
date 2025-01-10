@@ -70,6 +70,8 @@ void Engine::initWindow(const unsigned width, const unsigned height,
    glutKeyboardFunc(input_);
    glutPassiveMotionFunc(motion);
 
+	glEnable(GL_DEPTH_TEST);
+
    mainCamera = new Observer();
    mainLight = new Light(GL_LIGHT0);
 

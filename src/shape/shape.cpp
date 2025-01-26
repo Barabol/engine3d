@@ -16,10 +16,12 @@ Cube::Cube() {
       this->poz[x] = 0;
    setColors(rand() % 256, rand() % 256, rand() % 256);
    transformMatrix = glm::mat4(1.0f);
-   material.setAmbient(0.2f, 0.2f, 0.2f, 1.0f);
-   material.setDiffuse(0.8f, 0.8f, 0.8f, 1.0f);
-   material.setSpecular(1.0f, 1.0f, 1.0f, 1.0f);
-   material.setShininess(32.0f);
+   for (int x = 0; x < 6; x++) {
+      material[x].setAmbient(0.2f, 0.2f, 0.2f, 1.0f);
+      material[x].setDiffuse(0.8f, 0.8f, 0.8f, 1.0f);
+      material[x].setSpecular(1.0f, 1.0f, 1.0f, 1.0f);
+      material[x].setShininess(32.0f);
+   }
 }
 
 void Cube::setColors(unsigned char R, unsigned char G, unsigned char B) {
@@ -57,6 +59,16 @@ GLuint loadTexture(const char *filename) {
    stbi_image_free(data);
    return textureID;
 }
+void reset() {
+   glm::mat4 transformMatrix = glm::mat4(1.0f);
+   transformMatrix =
+       glm::translate(transformMatrix, glm::vec3(-0.3f, -0.1f, -5.0f));
+   transformMatrix = glm::rotate(transformMatrix, glm::radians(29.0f),
+                                 glm::vec3(1.0f, 0.0f, 0.0f));
+   transformMatrix = glm::rotate(transformMatrix, glm::radians(-26.0f),
+                                 glm::vec3(0.0f, 1.0f, 0.0f));
+   glMultMatrixf(glm::value_ptr(transformMatrix));
+}
 void Cube::draw(const char *texturename) {
    GLuint texture = loadTexture(texturename);
    glPushMatrix();
@@ -70,15 +82,18 @@ void Cube::draw(const char *texturename) {
    glTexCoordPointer(2, GL_FLOAT, 0, texcoords);
    glVertexPointer(3, GL_FLOAT, 0, vertices);
    for (int x = 0; x < 6; x++) {
-      material.apply();
+      material[x].apply();
       glDrawElements(GL_QUADS, 4, GL_UNSIGNED_BYTE, &indices[x << 2]);
    }
    glDisableClientState(GL_VERTEX_ARRAY);
    // glDisableClientState(GL_COLOR_ARRAY);
    glDisable(GL_TEXTURE_2D);
+   reset();
+   glFlush();
 }
+
 void Cube::draw() {
-   material.apply();
+   material[0].apply();
    glMultMatrixf(glm::value_ptr(transformMatrix));
 
    glEnableClientState(GL_VERTEX_ARRAY);
@@ -96,6 +111,23 @@ void Cube::draw() {
    glDisableClientState(GL_NORMAL_ARRAY);
    glDisableClientState(GL_COLOR_ARRAY);
 
+   glPopMatrix();
+}
+
+Plane::Plane(float scale) {
+   for (int x = 0; x < (sizeof(vertices) / sizeof(float)); x++) {
+      vertices[x] *= scale;
+   }
+   material = Material();
+}
+void Plane::draw() {
+   material.apply();
+   glEnableClientState(GL_VERTEX_ARRAY);
+   glVertexPointer(3, GL_FLOAT, 0, vertices);
+
+   glDrawElements(GL_QUADS, sizeof(indices), GL_UNSIGNED_BYTE, indices);
+
+   glDisableClientState(GL_VERTEX_ARRAY);
    glPopMatrix();
 }
 
@@ -123,4 +155,16 @@ void Cube::resetTransform() {
                                  glm::vec3(1.0f, 0.0f, 0.0f));
    transformMatrix = glm::rotate(transformMatrix, glm::radians(-26.0f),
                                  glm::vec3(0.0f, 1.0f, 0.0f));
+}
+void Rect::makeRect(float xScale, float yScale) {
+   for (int x = 0; x < (sizeof(vertices) / sizeof(float)); x++) {
+      switch (x % 3) {
+      case 0:
+         vertices[x] *= xScale;
+         break;
+      case 1:
+         vertices[x] *= yScale;
+         break;
+      }
+   }
 }

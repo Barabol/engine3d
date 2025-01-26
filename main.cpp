@@ -3,39 +3,27 @@
 #include <GL/freeglut_std.h>
 #include <GL/gl.h>
 #include <cstdio>
+#define LOCS 4
 class engine : public Engine {
-   Cube c = Cube();
+   float locs[LOCS][2] = {{-1.7, 0}, {-.6, 0.5}, {.6, 1}, {1.7, 1.5}};
+   Cube v = Cube();
+   Plane p = Plane(2.5);
+   Rect r = Rect();
    void draw() override {
       mainCamera->transpose();
-      glutSolidCube(1);
-      c.draw("./texture.png");
-      // c.draw();
-      // c.rotate(.1 * deltaTime, 0, 1, 0);
-      //   c.rotate(0.5 * deltaTime, 1, 0, 1);
-      //   c.translate(-0.001*deltaTime, 0, 0);
-      //
-      //   mainLight->transpose(0.2 * deltaTime, .2 * deltaTime, .2 *
-      //   deltaTime);
-      //
 
-      // mainLight->apply();
+      p.draw();
+      for (int x = 0; x < LOCS; x++) {
+         glTranslatef(locs[x][0], 0, locs[x][1]);
+         v.draw();
+         glTranslatef(locs[x][0] * -1, 0, locs[x][1] * -1);
+      }
    }
    void preRender() override {
-
-      // glutSetCursor(GLUT_CURSOR_NONE);
-      //  setProjection(ORTOGRAPHIC)//;
-      c.translate(0, -1, -5);
-      // c.material.setAmbient(1, 1, 1, .1);
-      // c.material.setShininess(5);
-      // c.material.setDiffuse(0, 0, 0, 0);
-      // c.material.setSpecular(1, 0, 0, 1);
-
-      // mainLight->setPosition(0, 0, 0);
-      // mainLight->setAmbient(1, 1, 1, 1);
-      // mainLight->setSpecular(1, 1, 1, 1);
-      // mainLight->setDiffuse(1, 1, 1, 1);
-      glShadeModel(GL_SMOOTH);
       glEnable(GL_DEPTH_TEST);
+      mainCamera->pitch = 30;
+      mainCamera->updateLoc(0, 5, 9);
+      r.makeRect(5, 0.2);
       // toggleFullScrean();
    }
    void input(int x, int y, int c, int type) override {
@@ -45,13 +33,11 @@ class engine : public Engine {
       float dirz[2];
       switch (type) {
       case KEYBOARD:
-         // dodać transformacje ruchu na podstawie obrotu kamery
-         //
          offset = mainCamera->yaw / 180;
 
          switch (c) {
          case 'w':
-            dirs[0] = -0.002;
+						locs[0][0]+=1;
             break;
          case 'a':
             dirs[1] = -0.002;
@@ -63,14 +49,12 @@ class engine : public Engine {
             dirs[1] = 0.002;
             break;
          case 'x':
-            mainCamera->updateCirc(10, 0);
+            mainCamera->updateLoc(0, 1, 0);
             break;
          case 'z':
-            mainCamera->updateCirc(-10, 0);
+            mainCamera->updateLoc(0, -1, 0);
             break;
          case 'v':
-
-            this->c.rotate(.1 * deltaTime, 0, 1, 0);
             break;
          }
          dirz[0] = dirs[0];
@@ -84,19 +68,7 @@ class engine : public Engine {
                 1 - offset - 1, dirz[1], dirz[0]);
 
          mainCamera->updateLoc(dirs[1] * deltaTime, 0, dirs[0] * deltaTime);
-         break;
-      case MOUSE_MOVEMENT:
-         if (x == lastMx && y == lastMy)
-            return;
-         offset = mainCamera->yaw / 360;
-         printf("> %f\n", offset);
-         mainCamera->updateCirc(.002 * deltaTime * (x - lastMx),
-                                .002 * deltaTime * (y - lastMy));
-
-         //glutWarpPointer(lastMx, lastMy);
-         lastMy = y;
-         lastMx = x;
-
+         printf("? %f\n", mainCamera->pitch);
          break;
       }
    }

@@ -2,6 +2,15 @@
 #define __3D_SHAPE__
 #include "../core/material.hpp"
 #include <glm/ext/matrix_float4x4.hpp>
+class Plane {
+ public:
+   Plane(float scale);
+   Material material;
+   float vertices[12] = {-1, 0, 2, 1, 0, 2, 1, 0, -2, -1, 0, -2};
+   unsigned char indices[4] = {0, 1, 2, 3};
+   float normals[6] = {0, 1, 0, 0, -1, 0};
+   void draw();
+};
 class Cube {
  public:
    float vertices[48] = {-0.5f, 0.0f,  0.5f,  0.5f, 0.0f,  0.5f,  0.5f,  1.0f,
@@ -37,9 +46,13 @@ class Cube {
    void scale(float x);
    void resetTransform();
 
-   Material material = Material();
+   Material material[6] = {Material()};
 
  protected:
    glm::mat4 transformMatrix;
+};
+class Rect : public Cube {
+ public:
+   void makeRect(float xScale, float yScale);
 };
 #endif

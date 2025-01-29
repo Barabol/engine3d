@@ -2,7 +2,7 @@
 #include <GL/freeglut_std.h>
 #include <GL/gl.h>
 #include <cstdio>
-
+#include <string>
 void projectionHolder(Engine *e, int w, int h) {
    static Engine *a = e;
    a->windowHeight = h;
@@ -12,16 +12,15 @@ void projectionHolder(Engine *e, int w, int h) {
 void changeSize(int w, int h) {
    glViewport(0, 0, w, h);
    projectionHolder(nullptr, w, h);
-   /*glMatrixMode(GL_PROJECTION);
+   glMatrixMode(GL_PROJECTION);
    glLoadIdentity();
    gluPerspective(45.0f, (GLfloat)w / (GLfloat)h, 0.1f, 100.0f);
-   glMatrixMode(GL_MODELVIEW);*/
+   glMatrixMode(GL_MODELVIEW);
 }
 
 void relDraw(Engine *e) {
    static Engine *a = e;
    static int lastTime = 0;
-
    int time = glutGet(GLUT_ELAPSED_TIME);
    if (time - lastTime < (1000 / a->targetTFP))
       return;
@@ -31,7 +30,14 @@ void relDraw(Engine *e) {
 
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
    glLoadIdentity();
+   a->setProjection(Engine::PROJECTION::PERSPECTIVE);
    a->draw();
+
+   glLoadIdentity(); 
+   a->setProjection(Engine::PROJECTION::ORTOGRAPHIC);
+   glDisable(GL_DEPTH_TEST);
+   a->renderHUD(std::to_string(a->score), a->lives);
+   glEnable(GL_DEPTH_TEST);
    glutSwapBuffers();
 }
 void relInput(Engine *e, unsigned char c, int x, int y, int type) {
@@ -44,11 +50,16 @@ void input_(unsigned char c, int x, int y) {
 }
 void motion(int x, int y) { relInput(nullptr, 0, x, y, 1); }
 
+
+
 void Engine::initWindow(const unsigned width, const unsigned height,
                         const char *name) {
 
    this->windowWidth = width;
    this->windowHeight = height;
+
+   this->score = 0;
+   this->lives = 8;
 
    int argv = 1;
    char argc[] = "app";
@@ -83,6 +94,7 @@ void Engine::initWindow(const unsigned width, const unsigned height,
    glMatrixMode(GL_MODELVIEW);
    this->preRender();
    glutMainLoop();
+
 }
 
 size_t len(const char *text) {
@@ -109,14 +121,14 @@ void Engine::setProjection(const PROJECTION projection) {
    this->projection = projection;
    glMatrixMode(GL_PROJECTION);
    glLoadIdentity();
-   float aspect = (float)(windowWidth) / (float)(windowHeight);
-   printf("%f,%f\n", windowWidth, windowHeight);
+   //float aspect = (float)(windowWidth) / (float)(windowHeight);
+   //printf("%f,%f\n", windowWidth, windowHeight);
    switch (projection) {
    case PERSPECTIVE:
       gluPerspective(45.0, windowWidth / windowHeight, 1.0, 100.0);
       break;
    case ORTOGRAPHIC:
-      glOrtho(-aspect * 2, aspect * 2, -2, 2, -1, 100);
+      glOrtho(0, windowWidth, windowHeight, 0, -1, 1);
       break;
    }
    glMatrixMode(GL_MODELVIEW);
@@ -126,6 +138,38 @@ void Engine::draw() {
    clearToColor(0, 0, 0);
    glTranslated(0, 0, -5);
    glutSolidTeapot(1);
+}
+void Engine::renderText(float x, float y, const char* text) {
+    glRasterPos2f(x, y); // Ustawienie pozycji tekstu
+    while (*text) {
+        glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, *text); // Rysowanie każdego znaku
+        text++;
+    }
+}
+void Engine::renderHUD(const std::string &score, int lives){
+   glDisable(GL_DEPTH_TEST);
+   glColor3f(0.824, 0.706, 0.549); // Kolor tekstu i platformy o dziwo
+    // Rysowanie prostokąta lub innych elementów HUD
+   //glBegin(GL_QUADS);
+   //   glVertex2i(20, 20);
+   //   glVertex2i(220, 20);
+   //   glVertex2i(220, 50);
+   //   glVertex2i(20, 50);
+   //glEnd();
+
+// Rysowanie napisu z wynikiem
+   renderText(30, 30, ("Score: " + score).c_str()); // Wyświetlenie wyniku
+   renderText(30, 60, ("Lives: " + std::to_string(lives)).c_str()); // Wyświetlenie liczby żyć
+   glEnable(GL_DEPTH_TEST);
+}
+void Engine::updateScore(int points) {
+   score += points; // Dodaj punkty do wyniku
+}
+
+void Engine::decreaseLife() {
+    if (lives > 0) {
+        lives--; // Zmniejsz liczbę żyć
+    }
 }
 void Engine::input(int x, int y, int c, int type) {}
 void Engine::toggleFullScrean() {

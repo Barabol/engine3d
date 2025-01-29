@@ -8,7 +8,7 @@
 #include <GL/glu.h>
 #include <GL/glut.h>
 #include <cstdio>
-
+#include <string>
 /**
  * File name and location relative to main file
  * of log file
@@ -20,6 +20,8 @@
  */
 class Engine {
  public:
+   int score;
+   int lives;
    float deltaTime;
    unsigned targetTFP = 30;
 
@@ -56,7 +58,11 @@ class Engine {
     * if set to NULL it will close file
     */
    void logError(const char *msg);
-
+   void renderHUD(const std::string &score, int lives);
+   void renderText(float x, float y, const char* text);
+   void updateScore(int points);
+   void decreaseLife();
+   
    /**
     * Method used for clearing screan to set color
     *
@@ -77,7 +83,6 @@ class Engine {
     * turns on full screan mode
     */
    void toggleFullScrean();
-
    /**
     * Virtual method responsible for screan updating
     *

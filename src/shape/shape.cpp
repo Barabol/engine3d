@@ -119,12 +119,26 @@ Plane::Plane(float scale) {
       vertices[x] *= scale;
    }
    material = Material();
+//   material.setAmbient(0.1f, 0.1f, 0.1f, 0.1f);
+//   material.setDiffuse(0.0f, 0.0f, 0.0f, 0.0f);
+//   material.setSpecular(0.0f, 0.0f, 0.0f, 0.0f);
+//   material.setShininess(0.0f);
+
+
 }
+
+void Plane::setColors(unsigned char R, unsigned char G, unsigned char B){
+   this->colors[0] = R;
+   this->colors[1] = G;
+   this->colors[2] = B;
+}
+
 void Plane::draw() {
    material.apply();
    glEnableClientState(GL_VERTEX_ARRAY);
    glVertexPointer(3, GL_FLOAT, 0, vertices);
-
+   
+   glColorPointer(3, GL_UNSIGNED_BYTE, 0, colors);
    glDrawElements(GL_QUADS, sizeof(indices), GL_UNSIGNED_BYTE, indices);
 
    glDisableClientState(GL_VERTEX_ARRAY);
